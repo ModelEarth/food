@@ -1,14 +1,4 @@
-const DIET_REQUIREMENTS = {
-    keto: {
-        'Total lipid (fat)': { min: 70, max: 80, unit: 'g' },
-        'Carbohydrate, by difference': { max: 20, unit: 'g' },
-        'Protein': { min: 25, max: 35, unit: 'g' },
-    }
-
-
-}
-
-const USDA_REQUIRED_NUTRIENTS = [
+export const USDA_REQUIRED_NUTRIENTS = [
     'Total lipid (fat)',
     'Fatty acids, total saturated',
     'Cholesterol',
@@ -23,7 +13,7 @@ const USDA_REQUIRED_NUTRIENTS = [
     'Potassium, K',
   ];
   
-  const VITAMIN_NUTRIENTS = [
+  export const VITAMIN_NUTRIENTS = [
     'Vitamin A, IU',
     'Vitamin C, total ascorbic acid',
     'Vitamin D (D2 + D3), International Units',
@@ -38,8 +28,17 @@ const USDA_REQUIRED_NUTRIENTS = [
     'Choline, total',
   ];
   
-
-const compareNutrientsToDiet = (foodNutrients, diet) => {
+  const DIET_REQUIREMENTS = {
+    keto: {
+      'Total lipid (fat)': { min: 70, max: 80, unit: 'g' },
+      'Carbohydrate, by difference': { max: 20, unit: 'g' },
+      'Protein': { min: 25, max: 35, unit: 'g' },
+      // Add other nutrient requirements as necessary
+    },
+    // Add other diets as needed
+  };
+  
+  export const compareNutrientsToDiet = (foodNutrients, diet) => {
     const gaps = [];
     const dietNutrients = DIET_REQUIREMENTS[diet];
   
@@ -68,10 +67,3 @@ const compareNutrientsToDiet = (foodNutrients, diet) => {
     return gaps;
   };
   
-
-
-
-
-
-
-
