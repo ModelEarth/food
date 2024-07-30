@@ -1,7 +1,7 @@
 import React from 'react';
 // import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Search from './components/search';
-import Label from './components/label';
+// import Label from './components/label';
 
 // const Search = () => <h1>Search</h1>
 

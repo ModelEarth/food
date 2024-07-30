@@ -6,17 +6,61 @@ import React, { useState } from 'react';
 import './Label.css';
 import { USDA_REQUIRED_NUTRIENTS, VITAMIN_NUTRIENTS, compareNutrientsToDiet } from './Diets.js';
 
-const Label = ({ searchResults, selectedDiet }) => {
+const Label = ({ searchResults, servingSizes, selectedDiet }) => {
+  const getTotalNutrients = () => {
+    const totalNutrients = {};
+    searchResults.forEach((result, index) => {
+      result.foodNutrients.forEach(nutrient => {
+        if (!totalNutrients[nutrient.nutrient.name]) {
+          totalNutrients[nutrient.nutrient.name] = 0;
+        }
+        const originalServingSize = result.servingSize || 100;
+        const adjustedAmount = (nutrient.amount * servingSizes[index]) / originalServingSize;
+        totalNutrients[nutrient.nutrient.name] += adjustedAmount;
+      });
+    });
+    return totalNutrients;
+  };
+
+  const totalNutrients = getTotalNutrients();
+
+  const usdaNutrients = USDA_REQUIRED_NUTRIENTS.map(nutrient => ({
+    name: nutrient,
+    amount: totalNutrients[nutrient] || 0,
+  }));
+
+  const vitaminNutrients = VITAMIN_NUTRIENTS.map(nutrient => ({
+    name: nutrient,
+    amount: totalNutrients[nutrient] || 0,
+  }));
+
+  const otherNutrients = Object.keys(totalNutrients)
+    .filter(nutrient => !USDA_REQUIRED_NUTRIENTS.includes(nutrient) && !VITAMIN_NUTRIENTS.includes(nutrient))
+    .map(nutrient => ({
+      name: nutrient,
+      amount: totalNutrients[nutrient],
+    }));
+
   return (
     <div className="label-container">
+      <TotalNutrientsLabel
+        usdaNutrients={usdaNutrients}
+        vitaminNutrients={vitaminNutrients}
+        otherNutrients={otherNutrients}
+      />
       {searchResults.map((result, index) => (
-        <NutritionLabel key={index} result={result} selectedDiet={selectedDiet} />
+        <NutritionLabel
+          key={index}
+          result={result}
+          servingSize={servingSizes[index]}
+          selectedDiet={selectedDiet}
+        />
       ))}
     </div>
   );
 };
 
-const NutritionLabel = ({ result, selectedDiet }) => {
+const NutritionLabel = ({ result, servingSize, selectedDiet }) => {
   const [showAll, setShowAll] = useState(false);
 
   const toggleShowAll = () => {
@@ -25,7 +69,10 @@ const NutritionLabel = ({ result, selectedDiet }) => {
 
   const getNutrientValue = (result, nutrientName) => {
     const nutrient = result.foodNutrients.find(n => n.nutrient.name === nutrientName);
-    return nutrient ? `${nutrient.amount} ${nutrient.nutrient.unitName}` : 'N/A';
+    if (!nutrient) return 'N/A';
+    const originalServingSize = result.servingSize || 100;
+    const adjustedAmount = (nutrient.amount * servingSize) / originalServingSize;
+    return `${adjustedAmount.toFixed(2)} ${nutrient.nutrient.unitName}`;
   };
 
   const usdaNutrients = result.foodNutrients.filter(nutrient =>
@@ -49,7 +96,7 @@ const NutritionLabel = ({ result, selectedDiet }) => {
 
       <div className="serving">
         <span>Serving Size</span>
-        <span>{result.servingSize ? `${result.servingSize} ${result.servingSizeUnit}` : 'N/A'}</span>
+        <span>{servingSize ? `${servingSize} ${result.servingSizeUnit}` : 'N/A'}</span>
       </div>
 
       <div className="calories">
@@ -62,7 +109,7 @@ const NutritionLabel = ({ result, selectedDiet }) => {
         {usdaNutrients.map((nutrient, index) => (
           <div key={index} className="nutrition-item">
             <span>{nutrient.nutrient.name}</span>
-            <span>{`${nutrient.amount} ${nutrient.nutrient.unitName}`}</span>
+            <span>{getNutrientValue(result, nutrient.nutrient.name)}</span>
           </div>
         ))}
 
@@ -70,7 +117,7 @@ const NutritionLabel = ({ result, selectedDiet }) => {
         {vitaminNutrients.map((nutrient, index) => (
           <div key={index} className="nutrition-item">
             <span>{nutrient.nutrient.name}</span>
-            <span>{`${nutrient.amount} ${nutrient.nutrient.unitName}`}</span>
+            <span>{getNutrientValue(result, nutrient.nutrient.name)}</span>
           </div>
         ))}
 
@@ -78,7 +125,7 @@ const NutritionLabel = ({ result, selectedDiet }) => {
           otherNutrients.map((nutrient, index) => (
             <div key={index} className="nutrition-item">
               <span>{nutrient.nutrient.name}</span>
-              <span>{`${nutrient.amount} ${nutrient.nutrient.unitName}`}</span>
+              <span>{getNutrientValue(result, nutrient.nutrient.name)}</span>
             </div>
           ))}
         <div className="nutrition-item">
@@ -103,6 +150,50 @@ const NutritionLabel = ({ result, selectedDiet }) => {
       )}
 
       <p className="date">Publication Date: {result.publicationDate || 'N/A'}</p>
+    </div>
+  );
+};
+
+const TotalNutrientsLabel = ({ usdaNutrients, vitaminNutrients, otherNutrients }) => {
+  const calories = usdaNutrients.find(nutrient => nutrient.name === "Energy")?.amount.toFixed(2) || "N/A";
+
+  return (
+    <div className="nutrition-label">
+      <h2>Total Nutrients</h2>
+
+      <div className="calories">
+        <span>Calories</span>
+        <span>{calories}</span>
+      </div>
+      <div className="nutrition-facts">
+        <h3>Nutrition Facts</h3>
+        {usdaNutrients.map((nutrient, index) => (
+          <div key={index} className="nutrition-item">
+            <span>{nutrient.name}</span>
+            <span>{nutrient.amount.toFixed(2)}</span>
+          </div>
+        ))}
+
+        <h4>Vitamins</h4>
+        {vitaminNutrients.map((nutrient, index) => (
+          <div key={index} className="nutrition-item">
+            <span>{nutrient.name}</span>
+            <span>{nutrient.amount.toFixed(2)}</span>
+          </div>
+        ))}
+
+        {otherNutrients.length > 0 && (
+          <>
+            <h4>Other Nutrients</h4>
+            {otherNutrients.map((nutrient, index) => (
+              <div key={index} className="nutrition-item">
+                <span>{nutrient.name}</span>
+                <span>{nutrient.amount.toFixed(2)}</span>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
     </div>
   );
 };

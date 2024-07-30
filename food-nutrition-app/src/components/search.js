@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import './Search.css';
-import Label from './label';
+import Label from './label.js';
 
 const Search = () => {
   const [searchInput, setSearchInput] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
+  const [servingSizes, setServingSizes] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -38,6 +39,7 @@ const Search = () => {
         brandName: suggestion.brandName,
       };
       setSearchResults([...searchResults, enrichedData]);
+      setServingSizes([...servingSizes, enrichedData.servingSize || 100]);
       setSearchInput("");
       setSuggestions([]);
     } catch (error) {
@@ -67,6 +69,13 @@ const Search = () => {
 
   const handleRemoveResult = (index) => {
     setSearchResults(searchResults.filter((_, i) => i !== index));
+    setServingSizes(servingSizes.filter((_, i) => i !== index));
+  };
+
+  const handleServingSizeChange = (index, newSize) => {
+    const updatedSizes = [...servingSizes];
+    updatedSizes[index] = newSize;
+    setServingSizes(updatedSizes);
   };
 
   const renderFoodItem = (food) => {
@@ -98,11 +107,17 @@ const Search = () => {
         {searchResults.map((result, index) => (
           <div key={result.fdcId} className="result-item">
             <span>{renderFoodItem(result)}</span>
+            <input
+              type="number"
+              value={servingSizes[index]}
+              onChange={(e) => handleServingSizeChange(index, parseFloat(e.target.value))}
+              min="1"
+            />
             <button onClick={() => handleRemoveResult(index)}>x</button>
           </div>
         ))}
       </div>
-      <Label searchResults={searchResults} />
+      <Label searchResults={searchResults} servingSizes={servingSizes} />
     </div>
   );
 };
