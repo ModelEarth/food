@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+build/
+node_modules/
+.vscode/
+.env
+env/
+.venv
+.flaskenv
+*.pyc
+*.pyo
+.ipynb_checkpoints
