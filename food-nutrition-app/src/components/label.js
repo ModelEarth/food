@@ -7,6 +7,10 @@ import './Label.css';
 import { USDA_REQUIRED_NUTRIENTS, VITAMIN_NUTRIENTS, compareNutrientsToDiet } from './Diets.js';
 
 const Label = ({ searchResults, servingSizes, selectedDiet }) => {
+
+  console.log(searchResults)
+
+
   const getTotalNutrients = () => {
     const totalNutrients = {};
     searchResults.forEach((result, index) => {
