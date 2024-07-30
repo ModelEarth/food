@@ -34,7 +34,7 @@ const Search = () => {
       const data = await fetchFoodDetails('bLecediTVa2sWd8AegmUZ9o7DxYFSYoef9B4i1Ml', suggestion.fdcId);
       const enrichedData = {
         ...data,
-        foodCategory: suggestion.foodCategory, // adding foodCategory
+        foodCategory: suggestion.foodCategory,
         brandName: suggestion.brandName,
       };
       setSearchResults([...searchResults, enrichedData]);
@@ -46,9 +46,6 @@ const Search = () => {
       setLoading(false);
     }
   };
-
-  console.log("suggestion", suggestions);
-  console.log("result", searchResults);
 
   const loadDataCommons_search = async (apiKey, keyword) => {
     const url = `https://api.nal.usda.gov/fdc/v1/foods/search?api_key=${apiKey}&query=${keyword}`;
@@ -74,7 +71,7 @@ const Search = () => {
 
   const renderFoodItem = (food) => {
     return food.dataType === "Branded" 
-      ? `${food.description},${food.foodCategory}, ${food.brandName}`
+      ? `${food.description}, ${food.foodCategory}, ${food.brandName}`
       : food.description;
   };
 
@@ -100,7 +97,7 @@ const Search = () => {
       <div className="results-container">
         {searchResults.map((result, index) => (
           <div key={result.fdcId} className="result-item">
-            <span>{renderFoodItem(result) }</span>
+            <span>{renderFoodItem(result)}</span>
             <button onClick={() => handleRemoveResult(index)}>x</button>
           </div>
         ))}
