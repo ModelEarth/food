@@ -28,10 +28,14 @@ const Label = ({ searchResults, servingSizes}) => {
 
   const totalNutrients = getTotalNutrients();
 
+
   const usdaNutrients = USDA_REQUIRED_NUTRIENTS.map(nutrient => ({
     name: nutrient,
     amount: totalNutrients[nutrient] || 0,
+    calories: nutrient.calories,
+    
   }));
+
 
   const vitaminNutrients = VITAMIN_NUTRIENTS.map(nutrient => ({
     name: nutrient,
