@@ -37,6 +37,7 @@ const Search = () => {
         ...data,
         foodCategory: suggestion.foodCategory,
         brandName: suggestion.brandName,
+        servingSizeUnit: data.servingSizeUnit
       };
       setSearchResults([...searchResults, enrichedData]);
       setServingSizes([...servingSizes, enrichedData.servingSize || 100]);
@@ -113,6 +114,7 @@ const Search = () => {
               onChange={(e) => handleServingSizeChange(index, parseFloat(e.target.value))}
               min="1"
             />
+            <span>{result.servingSizeUnit}</span>
             <button onClick={() => handleRemoveResult(index)}>x</button>
           </div>
         ))}

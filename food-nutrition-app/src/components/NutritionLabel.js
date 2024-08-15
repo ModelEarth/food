@@ -1,104 +1,91 @@
-import { USDA_REQUIRED_NUTRIENTS, VITAMIN_NUTRIENTS, compareNutrientsToDiet } from './Diets.js';
-import { useState } from 'react';
+import React from 'react';
+import './NutritionLabel.css';
 
+const NutritionLabel = ({ result, servingSize }) => {
+    console.log(result)
+  const getNutrientValue = (nutrientName) => {
+    const nutrient = result.foodNutrients.find(n => n.nutrient.name === nutrientName);
+    if (!nutrient) return '0';
+    const originalServingSize = result.servingSize || 100;
+    const adjustedAmount = (nutrient.amount * servingSize) / originalServingSize;
+    return adjustedAmount.toFixed(1);
+  };
 
-const NutritionLabel = ({ result, servingSize, selectedDiet }) => {
-    // State to manage showing more/less nutrients
-    const [showAll, setShowAll] = useState(false);
-  
-    // Function to toggle the show all/less state
-    const toggleShowAll = () => {
-      setShowAll(!showAll);
-    };
-  
-    // Function to get the nutrient value for a specific nutrient name
-    const getNutrientValue = (result, nutrientName) => {
-      const nutrient = result.foodNutrients.find(n => n.nutrient.name === nutrientName);
-      if (!nutrient) return 'N/A';
-      const originalServingSize = result.servingSize || 100;
-      const adjustedAmount = (nutrient.amount * servingSize) / originalServingSize;
-      return `${adjustedAmount.toFixed(2)} ${nutrient.nutrient.unitName}`;
-    };
-  
-    // Filtering nutrients into categories
-    const usdaNutrients = result.foodNutrients.filter(nutrient =>
-      USDA_REQUIRED_NUTRIENTS.includes(nutrient.nutrient.name)
-    );
-  
-    const vitaminNutrients = result.foodNutrients.filter(nutrient =>
-      VITAMIN_NUTRIENTS.includes(nutrient.nutrient.name)
-    );
-  
-    const otherNutrients = result.foodNutrients.filter(
-      nutrient => !USDA_REQUIRED_NUTRIENTS.includes(nutrient.nutrient.name) && !VITAMIN_NUTRIENTS.includes(nutrient.nutrient.name)
-    );
-  
-    const gaps = selectedDiet ? compareNutrientsToDiet(result.foodNutrients, selectedDiet) : [];
-  
-    return (
-      <div className="nutrition-label">
-        <h2>{result.description}</h2>
-        <p>Brand: {result.brandName || 'N/A'}</p>
-  
-        <div className="serving">
-          <span>Serving Size</span>
-          <span>{servingSize ? `${servingSize} ${result.servingSizeUnit}` : 'N/A'}</span>
+  return (
+    <div className="nutrition-label">
+      <div className="header">
+        <h2>Nutrition Facts</h2>
+        <span>Name: {result.description}, {result.brandName}</span>
+      </div>
+      <div className="serving-info">
+        <span>Serving Size {servingSize} {result.servingSizeUnit}</span>
+      </div>
+      <div className="line thick"></div>
+
+      <div className="nutrition-item calories">
+        <span>Calories</span>
+        <span>{getNutrientValue('Energy')}</span>
+      </div>
+      <div className="line"></div>
+
+      <div className="nutrition-item">
+        <span>Total Fat</span>
+        <span>{getNutrientValue('Total lipid (fat)')}g</span>
+      </div>
+      <div className="indent">
+        <div className="nutrition-subitem">
+          <span>Saturated Fat</span>
+          <span>{getNutrientValue('Fatty acids, total saturated')}g</span>
         </div>
-  
-        <div className="calories">
-          <span>Calories</span>
-          <span>{getNutrientValue(result, 'Energy')}</span>
+        <div className="nutrition-subitem">
+          <span>Trans Fat</span>
+          <span>{getNutrientValue('Fatty acids, total trans')}g</span>
         </div>
-  
-        <div className="nutrition-facts">
-          <h3>Nutrition Facts</h3>
-  
-          {usdaNutrients.map((nutrient, index) => (
-            <div key={index} className="nutrition-item">
-              <span>{nutrient.nutrient.name}</span>
-              <span>{getNutrientValue(result, nutrient.nutrient.name)}</span>
-            </div>
-          ))}
-  
-          <h4>Vitamins</h4>
-          {vitaminNutrients.map((nutrient, index) => (
-            <div key={index} className="nutrition-item">
-              <span>{nutrient.nutrient.name}</span>
-              <span>{getNutrientValue(result, nutrient.nutrient.name)}</span>
-            </div>
-          ))}
-  
-          {showAll &&
-            otherNutrients.map((nutrient, index) => (
-              <div key={index} className="nutrition-item">
-                <span>{nutrient.nutrient.name}</span>
-                <span>{getNutrientValue(result, nutrient.nutrient.name)}</span>
-              </div>
-            ))}
-          <div className="nutrition-item">
-            <button onClick={toggleShowAll}>{showAll ? 'Show Less' : '...More'}</button>
-          </div>
+      </div>
+      <div className="line"></div>
+
+      <div className="nutrition-item">
+        <span>Cholesterol</span>
+        <span>{getNutrientValue('Cholesterol')}mg</span>
+      </div>
+      <div className="line"></div>
+
+      <div className="nutrition-item">
+        <span>Sodium</span>
+        <span>{getNutrientValue('Sodium, Na')}mg</span>
+      </div>
+      <div className="line"></div>
+
+      <div className="nutrition-item">
+        <span>Total Carbohydrate</span>
+        <span>{getNutrientValue('Carbohydrate, by difference')}g</span>
+      </div>
+      <div className="indent">
+        <div className="nutrition-subitem">
+          <span>Dietary Fiber</span>
+          <span>{getNutrientValue('Fiber, total dietary')}g</span>
         </div>
-  
-        {selectedDiet && (
-          <div className="diet-gaps">
-            <h4>{selectedDiet.charAt(0).toUpperCase() + selectedDiet.slice(1)} Diet Gaps</h4>
-            {gaps.length > 0 ? (
-              gaps.map((gap, index) => (
-                <div key={index} className="gap-item">
-                  <span>{gap.nutrient}</span>
-                  <span>{`Current: ${gap.amount}, Required: ${gap.required}`}</span>
-                </div>
-              ))
-            ) : (
-              <p>No gaps found.</p>
-            )}
-          </div>
-        )}
-  
+        <div className="nutrition-subitem">
+          <span>Total Sugars</span>
+          <span>{getNutrientValue('Sugars, total')}g</span>
+        </div>
+      </div>
+      <div className="line"></div>
+
+      <div className="nutrition-item">
+        <span>Protein</span>
+        <span>{getNutrientValue('Protein')}g</span>
+      </div>
+      <div className="line thick"></div>
+
+      <div className="footer">
         <p className="date">Publication Date: {result.publicationDate || 'N/A'}</p>
       </div>
-    );
-  };
-  
+    </div>
+  );
+};
+
 export default NutritionLabel;
+
+
+

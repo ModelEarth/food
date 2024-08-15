@@ -4,11 +4,12 @@
 
 import React from 'react';
 import './Label.css';
-import Total from './Total';
-import NutritionLabel from './NutritionLabel.js'
-import { USDA_REQUIRED_NUTRIENTS, VITAMIN_NUTRIENTS, compareNutrientsToDiet } from './Diets.js';
+import Total from './Total';  // total nutritients
+import NutritionLabel from './NutritionLabel'; // individual food
+import DietBarChart from './DietBarChart.jsx'; // create bar chart comparison with diets
+import { USDA_REQUIRED_NUTRIENTS, VITAMIN_NUTRIENTS } from './Diets.js';
 
-const Label = ({ searchResults, servingSizes, selectedDiet }) => {
+const Label = ({ searchResults, servingSizes}) => {
 
   const getTotalNutrients = () => {
     const totalNutrients = {};
@@ -46,22 +47,33 @@ const Label = ({ searchResults, servingSizes, selectedDiet }) => {
 
   return (
     <div className="label-container">
-      <Total
-        usdaNutrients={usdaNutrients}
-        vitaminNutrients={vitaminNutrients}
-        otherNutrients={otherNutrients}
-      />
-      {searchResults.map((result, index) => (
-        <NutritionLabel
-          key={index}
-          result={result}
-          servingSize={servingSizes[index]}
-          selectedDiet={selectedDiet}
+      {/* Total nutrition facts for all selected foods */}
+      <div className='total'>
+        <Total
+          usdaNutrients={usdaNutrients}
+          vitaminNutrients={vitaminNutrients}
+          otherNutrients={otherNutrients}
         />
-      ))}
+      </div>
+
+      {/* Individual nutrition labels for each selected food */}
+      <div className='nutrition'>
+        {searchResults.map((result, index) => (
+          <NutritionLabel
+            key={index}
+            result={result}
+            servingSize={servingSizes[index]}
+          />
+        ))}
+      </div>
+
+      {/* Bar chart showing comparison against selected diets */}
+      {/* <DietBarChart
+        totalNutrients={totalNutrients}
+        selectedDiet={selectedDiet}
+      /> */}
     </div>
   );
 };
 
 export default Label;
-
