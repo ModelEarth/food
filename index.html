@@ -103,6 +103,18 @@
 .ingredients {
   font-weight: normal;
 }
+
+input[type=number] {
+    -webkit-appearance: textfield; /* Ensure the textfield appearance is used */
+    appearance: textfield; /* Standard property */
+    position: relative; /* This might help retain arrow visibility */
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {
+    opacity: 1; /* Force visibility */
+    display: inline-block; /* Make sure they display */
+}
 </style>
 
 <script>
@@ -344,6 +356,8 @@ $(document).ready(function () { // TO DO: Change to just wait for #item-name
   <div id="readmeDiv"></div>
   
     <div class="floatRight hideMobile" style="width:100%;max-width:600px;">
+
+        Combines Food YAML and Daily Recommended YAML to create Layout json.<br><br>
 
         <b>Food Item</b><br>
         <textarea id="sourceDiv" rows="10" style="width:100%"></textarea><br>
