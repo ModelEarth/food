@@ -21,6 +21,14 @@ function parseNutritionData(sourceData) {
         return base ? ((value / base) * 100).toFixed(0) : null;
     }
 
+    // TO DO - Pull from an external layout json file so we can switch rows displayed.
+    // https://chatgpt.com/share/68ade5c5-9b05-46a8-a0da-ccd771289693
+    
+    //loadParsedData('layout-standard.json').then(parsedData => {
+    //    alert("loaded")
+    //    return parsedData;
+    //});
+
     const parsedData = {
         itemName: sourceData.itemName,
         sections: [
