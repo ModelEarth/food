@@ -1,4 +1,7 @@
-{
+// We'll have multiple version of this script for custom layouts.
+// dailyValue might become goal. Later "average" will convery what the average person eats.
+function createLabelObject(sourceData) {
+    return {
     "itemName": sourceData.itemName,
     "sections": [
         { "name": "Calories", "value": sourceData.valueCalories },
@@ -31,4 +34,5 @@
         { "name": "Added Sugars", "value": sourceData.valueAddedSugars, "dailyValue": calculateDailyValue(sourceData.valueAddedSugars, 'addedSugars') },
         { "name": "Caffeine", "value": sourceData.valueCaffeine }
     ]
+    }
 }

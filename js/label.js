@@ -1,25 +1,26 @@
+const dailyValueCalculations = {
+    fat: 65, // Total Fat
+    satFat: 20, // Saturated Fat
+    cholesterol: 300, // Cholesterol
+    sodium: 2400, // Sodium
+    carb: 300, // Total Carbohydrate
+    fiber: 25, // Dietary Fiber
+    addedSugars: 50, // Added Sugars
+    vitaminD: 20, // Vitamin D (mcg)
+    calcium: 1300, // Calcium (mg)
+    iron: 18, // Iron (mg)
+    potassium: 4700 // Potassium (mg)
+};
+// Calculate daily values (assuming source data is for a typical 2,000-calorie diet)
+function calculateDailyValue(value, type) {
+    const base = dailyValueCalculations[type];
+    return base ? ((value / base) * 100).toFixed(0) : null;
+}
+
 function parseNutritionData(sourceData) {
-    const dailyValueCalculations = {
-        fat: 65, // Total Fat
-        satFat: 20, // Saturated Fat
-        cholesterol: 300, // Cholesterol
-        sodium: 2400, // Sodium
-        carb: 300, // Total Carbohydrate
-        fiber: 25, // Dietary Fiber
-        addedSugars: 50, // Added Sugars
-        vitaminD: 20, // Vitamin D (mcg)
-        calcium: 1300, // Calcium (mg)
-        iron: 18, // Iron (mg)
-        potassium: 4700 // Potassium (mg)
-    };
     $(document).ready(function () {
         $("#dailyDiv").text(JSON.stringify(dailyValueCalculations));
     });
-    // Calculate daily values (assuming source data is for a typical 2,000-calorie diet)
-    function calculateDailyValue(value, type) {
-        const base = dailyValueCalculations[type];
-        return base ? ((value / base) * 100).toFixed(0) : null;
-    }
 
     // TO DO - Pull from an external layout json file so we can switch rows displayed.
     // https://chatgpt.com/share/68ade5c5-9b05-46a8-a0da-ccd771289693
@@ -198,6 +199,9 @@ console.log("parsedNutritionLabel:")
 console.log(parsedNutritionLabel);
 
 $(document).ready(function () { // TO DO: Change to just wait for #item-name
+
+    $("#labelFromLayoutStandard").html(JSON.stringify(createLabelObject(sourceData)));
+
     // Event listeners for quantity input
     document.getElementById('quantity-input').addEventListener('change', (e) => {
         const quantity = parseFloat(e.target.value) || 1;
