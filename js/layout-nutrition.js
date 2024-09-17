@@ -1,6 +1,6 @@
 // We'll have multiple version of this script for custom layouts.
 // dailyValue might become goal. Later "average" will convery what the average person eats.
-function createLabelObject(sourceData) {
+function createProfileObject(sourceData) {
     return {
     "itemName": sourceData.itemName,
     "sections": [

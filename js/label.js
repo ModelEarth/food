@@ -1,3 +1,32 @@
+// Displays a label for food nutrition or product impact
+
+document.addEventListener('hashChangeEvent', hashChangedProfile, false);
+function hashChangedProfile() {
+    console.log("Profile hash changed");
+    loadProfile();
+}
+loadProfile();
+
+function getUrlHash() {
+  return (function (pairs) {
+    if (pairs == "") return {};
+    var result = {};
+    pairs.forEach(function(pair) {
+      // Split the pair on "=" to get key and value
+      var keyValue = pair.split('=');
+      var key = keyValue[0];
+      var value = keyValue.slice(1).join('=');
+
+      // Replace "%26" with "&" in the value
+      value = value.replace(/%26/g, '&');
+
+      // Set the key-value pair in the result object
+      result[key] = value;
+    });
+    return result;
+  })(window.location.hash.substr(1).split('&'));
+}
+
 const dailyValueCalculations = {
     fat: 65, // Total Fat
     satFat: 20, // Saturated Fat
@@ -11,98 +40,20 @@ const dailyValueCalculations = {
     iron: 18, // Iron (mg)
     potassium: 4700 // Potassium (mg)
 };
+$(document).ready(function () {
+    $("#dailyDiv").text(JSON.stringify(dailyValueCalculations));
+});
+
 // Calculate daily values (assuming source data is for a typical 2,000-calorie diet)
 function calculateDailyValue(value, type) {
     const base = dailyValueCalculations[type];
     return base ? ((value / base) * 100).toFixed(0) : null;
 }
 
-function parseNutritionData(sourceData) {
-    $(document).ready(function () {
-        $("#dailyDiv").text(JSON.stringify(dailyValueCalculations));
-    });
 
-    // TO DO - Pull from an external layout json file so we can switch rows displayed.
-    // https://chatgpt.com/share/68ade5c5-9b05-46a8-a0da-ccd771289693
-    
-    //loadParsedData('layout-standard.json').then(parsedData => {
-    //    alert("loaded")
-    //    return parsedData;
-    //});
-
-    const parsedData = {
-        itemName: sourceData.itemName,
-        sections: [
-            { name: "Calories", value: sourceData.valueCalories },
-            { name: "Calories from Fat", value: sourceData.valueFatCalories },
-            {
-                name: "Total Fat",
-                value: sourceData.valueTotalFat,
-                dailyValue: calculateDailyValue(sourceData.valueTotalFat, 'fat'),
-                subsections: [
-                    { name: "Saturated Fat", value: sourceData.valueSatFat, dailyValue: calculateDailyValue(sourceData.valueSatFat, 'satFat') },
-                    { name: "Trans Fat", value: sourceData.valueTransFat }
-                ]
-            },
-            { name: "Cholesterol", value: sourceData.valueCholesterol, dailyValue: calculateDailyValue(sourceData.valueCholesterol, 'cholesterol') },
-            { name: "Sodium", value: sourceData.valueSodium, dailyValue: calculateDailyValue(sourceData.valueSodium, 'sodium') },
-            {
-                name: "Total Carbohydrate",
-                value: sourceData.valueTotalCarb,
-                dailyValue: calculateDailyValue(sourceData.valueTotalCarb, 'carb'),
-                subsections: [
-                    { name: "Dietary Fiber", value: sourceData.valueFibers, dailyValue: calculateDailyValue(sourceData.valueFibers, 'fiber') },
-                    { name: "Sugars", value: sourceData.valueSugars }
-                ]
-            },
-            { name: "Protein", value: sourceData.valueProteins },
-            { name: "Vitamin D", value: sourceData.valueVitaminD, dailyValue: calculateDailyValue(sourceData.valueVitaminD, 'vitaminD') },
-            { name: "Potassium", value: sourceData.valuePotassium_2018, dailyValue: calculateDailyValue(sourceData.valuePotassium_2018, 'potassium') },
-            { name: "Calcium", value: sourceData.valueCalcium, dailyValue: calculateDailyValue(sourceData.valueCalcium, 'calcium') },
-            { name: "Iron", value: sourceData.valueIron, dailyValue: calculateDailyValue(sourceData.valueIron, 'iron') },
-            { name: "Added Sugars", value: sourceData.valueAddedSugars, dailyValue: calculateDailyValue(sourceData.valueAddedSugars, 'addedSugars') },
-            { name: "Caffeine", value: sourceData.valueCaffeine }
-        ]
-    };
-
-    return parsedData;
-}
-
-// Example source data from the provided object
-const sourceData = {
-    showServingUnitQuantity: false,
-    itemName: 'Bleu Cheese Dressing',
-    ingredientList: 'Bleu Cheese Dressing',
-    decimalPlacesForQuantityTextbox: 2,
-    valueServingUnitQuantity: 1,
-    allowFDARounding: true,
-    decimalPlacesForNutrition: 2,
-    showPolyFat: false,
-    showMonoFat: false,
-    valueCalories: 450,
-    valueFatCalories: 430,
-    valueTotalFat: 48,
-    valueSatFat: 6,
-    valueTransFat: 0,
-    valueCholesterol: 30,
-    valueSodium: 780,
-    valueTotalCarb: 3,
-    valueFibers: 0,
-    valueSugars: 3,
-    valueProteins: 3,
-    valueVitaminD: 12.22,
-    valuePotassium_2018: 4.22,
-    valueCalcium: 7.22,
-    valueIron: 11.22,
-    valueAddedSugars: 17,
-    valueCaffeine: 15.63,
-    showLegacyVersion: false
-};
-
-
-
-// Example parsedNutritionLabel object from the earlier steps
-const parsedNutritionLabelXXX = {
+// Example profileObject
+// Gets built by createProfileObject() in layout-.js
+const profileObjectXXX = {
     itemName: "Bleu Cheese Dressing",
     sections: [
         { name: "Calories", value: 450 },
@@ -179,7 +130,7 @@ function populateNutritionLabel(data) {
 
 // Function to update the nutrition label based on quantity
 function updateNutritionLabel(quantity) {
-    const updatedData = JSON.parse(JSON.stringify(parsedNutritionLabel));
+    const updatedData = JSON.parse(JSON.stringify(profileObject));
     updatedData.sections.forEach(section => {
         if (section.value) section.value = (section.value * quantity).toFixed(2);
         if (section.dailyValue) section.dailyValue = (section.dailyValue * quantity).toFixed(0);
@@ -194,41 +145,125 @@ function updateNutritionLabel(quantity) {
 }
 
 // Parse the source data into the desired structure
-const parsedNutritionLabel = parseNutritionData(sourceData);
-console.log("parsedNutritionLabel:")
-console.log(parsedNutritionLabel);
+let profileObject = {};
 
-$(document).ready(function () { // TO DO: Change to just wait for #item-name
-
-    $("#labelFromLayoutStandard").html(JSON.stringify(createLabelObject(sourceData)));
-
-    // Event listeners for quantity input
-    document.getElementById('quantity-input').addEventListener('change', (e) => {
-        const quantity = parseFloat(e.target.value) || 1;
-        updateNutritionLabel(quantity);
-    });
-
-    document.getElementById('decrease-quantity').addEventListener('click', () => {
-        const input = document.getElementById('quantity-input');
-        let quantity = parseFloat(input.value) || 1;
-        if (quantity > 1) {
-            quantity--;
-            input.value = quantity;
-            updateNutritionLabel(quantity);
-        }
-    });
-
-    document.getElementById('increase-quantity').addEventListener('click', () => {
-        const input = document.getElementById('quantity-input');
-        let quantity = parseFloat(input.value) || 1;
-        quantity++;
-        input.value = quantity;
-        updateNutritionLabel(quantity);
-    });
-
-    // Initial population - HTML
-    populateNutritionLabel(parsedNutritionLabel);
+function loadProfile() {
+    let hash = getUrlHash();
+    let labelType = "food";
+    let whichLayout = "js/layout-nutrition.js";
+    if (hash.layout == "product") {
+        labelType = "product";
+        whichLayout = "js/layout-product.js";
+    }
     
-    $("#sourceDiv").text(JSON.stringify(sourceData));
-    $("#jsonDiv").text(JSON.stringify(parsedNutritionLabel));
-});
+    let sourceData = {};
+    // TO DO: Load these from API or file
+    if (labelType == "product") {
+        // https://github.com/ModelEarth/io/blob/main/template/product/product-nodashes.yaml
+        sourceData = {
+            itemName: 'Sample Product',
+            id: "ec3yznau",
+            ref: "https://openepd.buildingtransparency.org/api/epds/EC3YZNAU",
+            doctype: "OpenEPD",
+            version: null,
+            language: "en",
+            valueGlobalWarmingPotential: 445 ,
+            ghgunits: "kg CO2 eq"
+            /*
+            private: false,
+            program_operator_doc_id: "9BD4F9CB-3584-4D34-90F8-B6E40B69653D",
+            program_operator_version: null,
+            third_party_verification_url: null,
+            date_of_issue: '2019-01-28T00:00:00Z',
+            valid_until: '2024-01-28T00:00:00Z',
+            kg_C_per_declared_unit: null,
+            product_name: DM0115CA,
+            product_sku: null,
+            product_description: "DOT MINOR 3/4 15FA 3-5SL AIR",
+            product_image_small: null,
+            product_image: null,
+            product_service_life_years: null,
+            applicable_in: null,
+            product_usage_description: null,
+            product_usage_image: null,
+            manufacturing_description: null,
+            manufacturing_image: null,
+            compliance: []
+            */
+        };
+    }
+
+    if (labelType == "food") {
+        // Example source data from the provided object
+        sourceData = {
+            showServingUnitQuantity: false,
+            itemName: 'Bleu Cheese Dressing',
+            ingredientList: 'Bleu Cheese Dressing',
+            decimalPlacesForQuantityTextbox: 2,
+            valueServingUnitQuantity: 1,
+            allowFDARounding: true,
+            decimalPlacesForNutrition: 2,
+            showPolyFat: false,
+            showMonoFat: false,
+            valueCalories: 450,
+            valueFatCalories: 430,
+            valueTotalFat: 48,
+            valueSatFat: 6,
+            valueTransFat: 0,
+            valueCholesterol: 30,
+            valueSodium: 780,
+            valueTotalCarb: 3,
+            valueFibers: 0,
+            valueSugars: 3,
+            valueProteins: 3,
+            valueVitaminD: 12.22,
+            valuePotassium_2018: 4.22,
+            valueCalcium: 7.22,
+            valueIron: 11.22,
+            valueAddedSugars: 17,
+            valueCaffeine: 15.63,
+            showLegacyVersion: false
+        };
+    }
+
+    loadScript(whichLayout, function(results) {
+        // Same as #jsonDiv
+        // $("#labelFromLayoutStandard").html("<br><b>Resulting profileObject</b><div style='border:1px solid #ccc;padding:15px'>" + JSON.stringify(createProfileObject(sourceData)) + "</div><br>");
+        alert("whichLayout loaded: " + whichLayout);
+        profileObject = createProfileObject(sourceData); // Guessing
+        console.log("profileObject:")
+        console.log(profileObject);
+
+        $(document).ready(function () { // TO DO: Change to just wait for #item-name
+            // Event listeners for quantity input
+            document.getElementById('quantity-input').addEventListener('change', (e) => {
+                const quantity = parseFloat(e.target.value) || 1;
+                updateNutritionLabel(quantity);
+            });
+
+            document.getElementById('decrease-quantity').addEventListener('click', () => {
+                const input = document.getElementById('quantity-input');
+                let quantity = parseFloat(input.value) || 1;
+                if (quantity > 1) {
+                    quantity--;
+                    input.value = quantity;
+                    updateNutritionLabel(quantity);
+                }
+            });
+
+            document.getElementById('increase-quantity').addEventListener('click', () => {
+                const input = document.getElementById('quantity-input');
+                let quantity = parseFloat(input.value) || 1;
+                quantity++;
+                input.value = quantity;
+                updateNutritionLabel(quantity);
+            });
+
+            // Initial population - HTML
+            populateNutritionLabel(profileObject);
+            
+            $("#sourceDiv").text(JSON.stringify(sourceData));
+            $("#jsonDiv").text(JSON.stringify(profileObject));
+        });
+    });
+}
