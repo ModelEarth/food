@@ -32,7 +32,7 @@ loadMarkdown("README.md", "readmeDiv", "_parent");
 
         Combines Food YAML and Daily Recommended YAML to create Layout json.<br><br>
 
-        <b>Food Item</b><br>
+        <b>Item</b><br>
         <textarea id="sourceDiv" rows="10" style="width:100%"></textarea><br>
 
         <b>Recommended Daily</b><br>
@@ -41,7 +41,8 @@ loadMarkdown("README.md", "readmeDiv", "_parent");
         <b>Profile Object</b><br>
         <textarea id="jsonDiv" rows="15" style="width:100%"></textarea>
 
-        <div id="labelFromLayoutStandard"></div>
+        <br><br>
+
     </div>
 
     <div style="overflow: auto;">
@@ -66,9 +67,10 @@ loadMarkdown("README.md", "readmeDiv", "_parent");
         <!-- Sections will be dynamically injected here by JavaScript -->
       </div>
 
-      <hr class="thick-line">
+      
 
-      <div class="footer">
+      <div id="nutritionFooter" class="footer" style="display:none">
+        <hr class="thick-line">
         <div class="disclaimer">
           * The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2000 calories a day is used for general nutrition advice.
         </div>

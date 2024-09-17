@@ -1,4 +1,5 @@
-// Displays a label for food nutrition or product impact
+// Displays a label for food nutrition or product impact.
+// profileObject is built by createProfileObject() in layout-.js template.
 
 document.addEventListener('hashChangeEvent', hashChangedProfile, false);
 function hashChangedProfile() {
@@ -27,6 +28,7 @@ function getUrlHash() {
   })(window.location.hash.substr(1).split('&'));
 }
 
+// Recommended daily intake / Average impacts
 const dailyValueCalculations = {
     fat: 65, // Total Fat
     satFat: 20, // Saturated Fat
@@ -45,48 +47,11 @@ $(document).ready(function () {
 });
 
 // Calculate daily values (assuming source data is for a typical 2,000-calorie diet)
+// Called from layout-nutrition.js
 function calculateDailyValue(value, type) {
     const base = dailyValueCalculations[type];
     return base ? ((value / base) * 100).toFixed(0) : null;
 }
-
-
-// Example profileObject
-// Gets built by createProfileObject() in layout-.js
-const profileObjectXXX = {
-    itemName: "Bleu Cheese Dressing",
-    sections: [
-        { name: "Calories", value: 450 },
-        { name: "Calories from Fat", value: 430 },
-        {
-            name: "Total Fat",
-            value: 48,
-            dailyValue: 74,
-            subsections: [
-                { name: "Saturated Fat", value: 6, dailyValue: 30 },
-                { name: "Trans Fat", value: 0 }
-            ]
-        },
-        { name: "Cholesterol", value: 30, dailyValue: 10 },
-        { name: "Sodium", value: 780, dailyValue: 32 },
-        {
-            name: "Total Carbohydrate",
-            value: 3,
-            dailyValue: 1,
-            subsections: [
-                { name: "Dietary Fiber", value: 0 },
-                { name: "Sugars", value: 3, dailyValue: 0 },
-                { name: "Includes 17g Added Sugars", value: 17, extraIndent: true }
-            ]
-        },
-        { name: "Protein", value: 3 },
-        { name: "Vitamin D", value: 12.22, dailyValue: 61 },
-        { name: "Potassium", value: 4.22, dailyValue: 0.1 },
-        { name: "Calcium", value: 7.22, dailyValue: 7.2 },
-        { name: "Iron", value: 11.22, dailyValue: 62 },
-        { name: "Caffeine", value: 15.63 }
-    ]
-};
 
 function populateNutritionLabel(data) {
     document.getElementById("item-name").innerText = data.itemName;
@@ -154,87 +119,97 @@ function loadProfile() {
     if (hash.layout == "product") {
         labelType = "product";
         whichLayout = "js/layout-product.js";
-    }
-    
-    let sourceData = {};
-    // TO DO: Load these from API or file
-    if (labelType == "product") {
-        // https://github.com/ModelEarth/io/blob/main/template/product/product-nodashes.yaml
-        sourceData = {
-            itemName: 'Sample Product',
-            id: "ec3yznau",
-            ref: "https://openepd.buildingtransparency.org/api/epds/EC3YZNAU",
-            doctype: "OpenEPD",
-            version: null,
-            language: "en",
-            valueGlobalWarmingPotential: 445 ,
-            ghgunits: "kg CO2 eq"
-            /*
-            private: false,
-            program_operator_doc_id: "9BD4F9CB-3584-4D34-90F8-B6E40B69653D",
-            program_operator_version: null,
-            third_party_verification_url: null,
-            date_of_issue: '2019-01-28T00:00:00Z',
-            valid_until: '2024-01-28T00:00:00Z',
-            kg_C_per_declared_unit: null,
-            product_name: DM0115CA,
-            product_sku: null,
-            product_description: "DOT MINOR 3/4 15FA 3-5SL AIR",
-            product_image_small: null,
-            product_image: null,
-            product_service_life_years: null,
-            applicable_in: null,
-            product_usage_description: null,
-            product_usage_image: null,
-            manufacturing_description: null,
-            manufacturing_image: null,
-            compliance: []
-            */
-        };
-    }
+    } // Also add removeElement() line below for new layouts.
 
-    if (labelType == "food") {
-        // Example source data from the provided object
-        sourceData = {
-            showServingUnitQuantity: false,
-            itemName: 'Bleu Cheese Dressing',
-            ingredientList: 'Bleu Cheese Dressing',
-            decimalPlacesForQuantityTextbox: 2,
-            valueServingUnitQuantity: 1,
-            allowFDARounding: true,
-            decimalPlacesForNutrition: 2,
-            showPolyFat: false,
-            showMonoFat: false,
-            valueCalories: 450,
-            valueFatCalories: 430,
-            valueTotalFat: 48,
-            valueSatFat: 6,
-            valueTransFat: 0,
-            valueCholesterol: 30,
-            valueSodium: 780,
-            valueTotalCarb: 3,
-            valueFibers: 0,
-            valueSugars: 3,
-            valueProteins: 3,
-            valueVitaminD: 12.22,
-            valuePotassium_2018: 4.22,
-            valueCalcium: 7.22,
-            valueIron: 11.22,
-            valueAddedSugars: 17,
-            valueCaffeine: 15.63,
-            showLegacyVersion: false
-        };
-    }
+    // Remove prior layout-.js since createProfileObject() repeats.
+    // detach() could possibly be used to assign to a holder then restore.
+    removeElement('/js/layout-nutrition.js'); // Resides in localsite/js/localsite.js
+    removeElement('/js/layout-product.js');
 
     loadScript(whichLayout, function(results) {
-        // Same as #jsonDiv
-        // $("#labelFromLayoutStandard").html("<br><b>Resulting profileObject</b><div style='border:1px solid #ccc;padding:15px'>" + JSON.stringify(createProfileObject(sourceData)) + "</div><br>");
-        alert("whichLayout loaded: " + whichLayout);
+        let sourceData = {};
+        // TO DO: Load these from API or file
+        if (labelType == "product") {
+            // https://github.com/ModelEarth/io/blob/main/template/product/product-nodashes.yaml
+            sourceData = {
+                itemName: 'Sample Product',
+                id: "ec3yznau",
+                ref: "https://openepd.buildingtransparency.org/api/epds/EC3YZNAU",
+                doctype: "OpenEPD",
+                version: null,
+                language: "en",
+                valueGlobalWarmingPotential: 445 ,
+                ghgunits: "kg CO2 eq"
+                /*
+                private: false,
+                program_operator_doc_id: "9BD4F9CB-3584-4D34-90F8-B6E40B69653D",
+                program_operator_version: null,
+                third_party_verification_url: null,
+                date_of_issue: '2019-01-28T00:00:00Z',
+                valid_until: '2024-01-28T00:00:00Z',
+                kg_C_per_declared_unit: null,
+                product_name: DM0115CA,
+                product_sku: null,
+                product_description: "DOT MINOR 3/4 15FA 3-5SL AIR",
+                product_image_small: null,
+                product_image: null,
+                product_service_life_years: null,
+                applicable_in: null,
+                product_usage_description: null,
+                product_usage_image: null,
+                manufacturing_description: null,
+                manufacturing_image: null,
+                compliance: []
+                */
+            };
+        }
+
+        if (labelType == "food") {
+            // Example source data from the provided object
+            sourceData = {
+                showServingUnitQuantity: false,
+                itemName: 'Bleu Cheese Dressing',
+                ingredientList: 'Bleu Cheese Dressing',
+                decimalPlacesForQuantityTextbox: 2,
+                valueServingUnitQuantity: 1,
+                allowFDARounding: true,
+                decimalPlacesForNutrition: 2,
+                showPolyFat: false,
+                showMonoFat: false,
+                valueCalories: 450,
+                valueFatCalories: 430,
+                valueTotalFat: 48,
+                valueSatFat: 6,
+                valueTransFat: 0,
+                valueCholesterol: 30,
+                valueSodium: 780,
+                valueTotalCarb: 3,
+                valueFibers: 0,
+                valueSugars: 3,
+                valueProteins: 3,
+                valueVitaminD: 12.22,
+                valuePotassium_2018: 4.22,
+                valueCalcium: 7.22,
+                valueIron: 11.22,
+                valueAddedSugars: 17,
+                valueCaffeine: 15.63,
+                showLegacyVersion: false
+            };
+        }
+
+        // TO DO: Since createProfileObject occurs twice, drop one of the layout-.js files.
+
         profileObject = createProfileObject(sourceData); // Guessing
         console.log("profileObject:")
         console.log(profileObject);
 
         $(document).ready(function () { // TO DO: Change to just wait for #item-name
+            if (hash.layout == "product") {
+                $("#nutritionFooter").hide();
+            } else {
+                $("#nutritionFooter").show();
+            }
+
             // Event listeners for quantity input
             document.getElementById('quantity-input').addEventListener('change', (e) => {
                 const quantity = parseFloat(e.target.value) || 1;
