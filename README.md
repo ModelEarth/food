@@ -1,3 +1,5 @@
+<a href="/OpenFootprint">Open Footprint</a> - <a href="/io/template">Builder</a>
+
 # Profile Object
 
 [Nutrition Layout](#layout=nutrition) and [Product Layout](#layout=product) - [Food Data Commons](/data-commons/docs/food/)
