@@ -10,8 +10,8 @@ function createProfileObject(sourceData) {
             "value": sourceData.valueTotalFat,
             "dailyValue": calculateDailyValue(sourceData.valueTotalFat, 'fat'),
             "subsections": [
-                { "name": "Saturated Fat", "value": sourceData.valueSatFat, "dailyValue": calculateDailyValue(sourceData.valueSatFat, 'satFat') },
-                { "name": "Trans Fat", "value": sourceData.valueTransFat }
+                { "name": "Something", "value": sourceData.valueSatFat, "dailyValue": calculateDailyValue(sourceData.valueSatFat, 'satFat') },
+                { "name": "Something 2", "value": sourceData.valueTransFat }
             ]
         },
     ]

@@ -5,7 +5,7 @@
   gap: 20px;
 }
 
-.nutrition-label {
+.item-label {
   border: 1px solid #000;
   padding: 20px;
   width: 300px;
@@ -32,12 +32,12 @@
   font-weight: bold;
 }
 
-.nutrition-label h2, .nutrition-label h3 {
+.item-label h2, .item-label h3 {
   margin: 0;
   padding: 0;
 }
 
-.nutrition-label h3 {
+.item-label h3 {
   border-bottom: 2px solid #000;
   padding-bottom: 5px;
   margin-bottom: 10px;

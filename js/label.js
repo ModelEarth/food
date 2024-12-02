@@ -120,11 +120,12 @@ function loadProfile() {
         labelType = "product";
         whichLayout = "js/layout-product.js";
     } // Also add removeElement() line below for new layouts.
+    whichLayout = "/food/" + whichLayout;
 
     // Remove prior layout-.js since createProfileObject() repeats.
     // detach() could possibly be used to assign to a holder then restore.
-    removeElement('/js/layout-nutrition.js'); // Resides in localsite/js/localsite.js
-    removeElement('/js/layout-product.js');
+    removeElement('/food/js/layout-nutrition.js'); // Resides in localsite/js/localsite.js
+    removeElement('/food/js/layout-product.js');
 
     loadScript(whichLayout, function(results) {
         let sourceData = {};

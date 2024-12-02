@@ -94,7 +94,7 @@ const NutritionLabel = ({ result, servingSize, selectedDiet }) => {
   const gaps = selectedDiet ? compareNutrientsToDiet(result.foodNutrients, selectedDiet) : [];
 
   return (
-    <div className="nutrition-label">
+    <div className="item-label">
       <h2>{result.description}</h2>
       <p>Brand: {result.brandName || 'N/A'}</p>
 
@@ -162,7 +162,7 @@ const TotalNutrientsLabel = ({ usdaNutrients, vitaminNutrients, otherNutrients }
   const calories = usdaNutrients.find(nutrient => nutrient.name === "Energy")?.amount.toFixed(2) || "N/A";
 
   return (
-    <div className="nutrition-label">
+    <div className="item-label">
       <h2>Total Nutrients</h2>
 
       <div className="calories">
